@@ -22,17 +22,19 @@ function Witbot (witToken) {
       // only consider the 1st outcome
       if (res.outcomes && res.outcomes.length > 0) {
         var outcome = res.outcomes[0]
-        var intent = outcome.entities.intent[0].value
-        var confidence = outcome.entities.intent[0].confidence
-        args.push(outcome)
-        if (intents._intents[intent]) {
-          console.log('"' + intent + '" - intent found')
-          intents._intents[intent].forEach(function (registration) {
-            if (!matched && confidence >= registration.confidence) {
-              matched = true
-              registration.fn.apply(undefined, args)
-            }
-          })
+        if(typeof outcome.entities.intent !== 'undefined'){
+          var intent = outcome.entities.intent[0].value
+          var confidence = outcome.entities.intent[0].confidence
+          args.push(outcome)
+          if (intents._intents[intent]) {
+            console.log('"' + intent + '" - intent found')
+            intents._intents[intent].forEach(function (registration) {
+              if (!matched && confidence >= registration.confidence) {
+                matched = true
+                registration.fn.apply(undefined, args)
+              }
+            })
+          }
         } else if (intents._any) {
           matched = true
           intents._any.apply(undefined, args)
