@@ -22,11 +22,13 @@ function Witbot (witToken) {
       // only consider the 1st outcome
       if (res.outcomes && res.outcomes.length > 0) {
         var outcome = res.outcomes[0]
-        var intent = outcome.intent
+        var intent = outcome.entities.intent[0].value
+        var confidence = outcome.entities.intent[0].confidence
         args.push(outcome)
         if (intents._intents[intent]) {
+          console.log('"' + intent + '" - intent found')
           intents._intents[intent].forEach(function (registration) {
-            if (!matched && outcome.confidence >= registration.confidence) {
+            if (!matched && confidence >= registration.confidence) {
               matched = true
               registration.fn.apply(undefined, args)
             }
